@@ -1,1 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bidus Auto Admin</title>
+  <link rel="stylesheet" href="./admin.css" />
+</head>
+<body>
+  <div class="admin-layout">
+    <aside class="admin-sidebar">
+      <h2>Bidus Auto Admin</h2>
+      <nav>
+        <a href="#listings">Listings</a>
+        <a href="#create">Create / Edit</a>
+        <a href="#prequalifications">Deposits</a>
+      </nav>
+    </aside>
 
+    <main class="admin-main">
+      <section class="admin-section" id="create">
+        <div class="section-header">
+          <div>
+            <p class="eyebrow">Admin CMS</p>
+            <h1>Create / Edit Vehicle</h1>
+          </div>
+          <button id="setAdminKeyBtn" class="btn btn-secondary" type="button">Set Admin Key</button>
+        </div>
+
+        <form id="vehicleForm" class="admin-form">
+          <div class="grid two">
+            <div>
+              <label>Vehicle ID</label>
+              <input id="id" name="id" type="text" placeholder="example: bmw-m4-2021" />
+            </div>
+            <div>
+              <label>Title</label>
+              <input id="title" name="title" type="text" placeholder="2021 BMW M4 Competition" required />
+            </div>
+          </div>
+
+          <div class="grid three">
+            <div>
+              <label>Make</label>
+              <input id="make" name="make" type="text" required />
+            </div>
+            <div>
+              <label>Model</label>
+              <input id="model" name="model" type="text" required />
+            </div>
+            <div>
+              <label>Year</label>
+              <input id="year" name="year" type="number" required />
+            </div>
+          </div>
+
+          <div class="grid three">
+            <div>
+              <label>Mileage</label>
+              <input id="mileage" name="mileage" type="number" />
+            </div>
+            <div>
+              <label>Transmission</label>
+              <input id="transmission" name="transmission" type="text" />
+            </div>
+            <div>
+              <label>Fuel Type</label>
+              <input id="fuelType" name="fuelType" type="text" />
+            </div>
+          </div>
+
+          <div class="grid three">
+            <div>
+              <label>Condition</label>
+              <input id="condition" name="condition" type="text" />
+            </div>
+            <div>
+              <label>Starting Bid</label>
+              <input id="startingBid" name="startingBid" type="number" required />
+            </div>
+            <div>
+              <label>Min Increment</label>
+              <input id="minimumIncrement" name="minimumIncrement" type="number" required />
+            </div>
+          </div>
+
+          <div class="grid two">
+            <div>
+              <label>Auction Start</label>
+              <input id="auctionStart" name="auctionStart" type="datetime-local" required />
+            </div>
+            <div>
+              <label>Auction End</label>
+              <input id="auctionEnd" name="auctionEnd" type="datetime-local" required />
+            </div>
+          </div>
+
+          <div class="grid two">
+            <div>
+              <label>Visible</label>
+              <select id="isVisible" name="isVisible">
+                <option value="true">true</option>
+                <option value="false">false</option>
+              </select>
+            </div>
+            <div>
+              <label>Featured</label>
+              <select id="isFeatured" name="isFeatured">
+                <option value="false">false</option>
+                <option value="true">true</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label>Description</label>
+            <textarea id="description" name="description"></textarea>
+          </div>
+
+          <div class="grid two">
+            <div>
+              <label>Vehicle Video URL (optional)</label>
+              <input id="videoUrl" name="videoUrl" type="text" placeholder="Cloudflare Stream URL or public video URL" />
+            </div>
+            <div>
+              <label>Bidder Deposit Required</label>
+              <input id="depositRequired" name="depositRequired" type="number" value="20" />
+            </div>
+          </div>
+
+          <div>
+            <label>Upload Vehicle Images</label>
+            <input id="vehicleImages" name="vehicleImages" type="file" multiple accept="image/*" />
+            <p class="help-text">Upload up to 20 images.</p>
+          </div>
+
+          <div id="uploadedImages" class="uploaded-images"></div>
+
+          <div class="actions">
+            <button class="btn btn-primary" type="submit">Save Vehicle</button>
+          </div>
+
+          <div id="saveMessage"></div>
+        </form>
+      </section>
+
+      <section class="admin-section" id="listings">
+        <div class="section-header">
+          <div>
+            <p class="eyebrow">Listings</p>
+            <h2>Saved Vehicles</h2>
+          </div>
+          <button id="refreshVehiclesBtn" class="btn btn-secondary" type="button">Refresh</button>
+        </div>
+
+        <div id="adminVehiclesList" class="admin-vehicle-list"></div>
+      </section>
+    </main>
+  </div>
+
+  <script src="./admin.js"></script>
+</body>
+</html>
