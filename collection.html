@@ -1,1 +1,157 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bidus Auto | Live Auctions</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="logo" href="./index.html">Bidus Auto</a>
+
+      <nav class="main-nav">
+        <a href="./index.html">Home</a>
+        <a href="./collection.html" class="active">Auctions</a>
+      </nav>
+
+      <a class="btn btn-primary" href="./collection.html">Browse Auctions</a>
+    </div>
+  </header>
+
+  <section class="page-hero">
+    <div class="container">
+      <p class="eyebrow">Auction Listings</p>
+      <h1>Live Vehicle Auctions</h1>
+      <p class="hero-text">
+        Browse all available auction vehicles and open each listing to view full details and bid requirements.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="toolbar">
+        <input id="searchInput" class="search-input" type="text" placeholder="Search make, model, year..." />
+        <select id="statusFilter" class="select-input">
+          <option value="all">All</option>
+          <option value="live">Live</option>
+          <option value="scheduled">Scheduled</option>
+          <option value="ended">Ended</option>
+        </select>
+      </div>
+
+      <div id="auctionGrid" class="vehicle-grid">
+        <div class="loading-card">Loading auctions...</div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <p>© 2026 Bidus Auto. All rights reserved.</p>
+      <div class="footer-links">
+        <a href="./index.html">Home</a>
+        <a href="./collection.html">Auctions</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const auctionGrid = document.getElementById('auctionGrid');
+    const searchInput = document.getElementById('searchInput');
+    const statusFilter = document.getElementById('statusFilter');
+
+    let allVehicles = [];
+
+    function getAuctionStatus(vehicle) {
+      const now = Date.now();
+      const start = new Date(vehicle.auctionStart).getTime();
+      const end = new Date(vehicle.auctionEnd).getTime();
+
+      if (!vehicle.isVisible) return 'hidden';
+      if (now < start) return 'scheduled';
+      if (now > end) return 'ended';
+      return 'live';
+    }
+
+    function vehicleCard(vehicle) {
+      const status = getAuctionStatus(vehicle);
+      const image = vehicle.images && vehicle.images.length ? `/images/${vehicle.images[0]}` : '';
+      const currentBid = Number(vehicle.currentBid || vehicle.startingBid || 0).toLocaleString();
+
+      return `
+        <article class="vehicle-card">
+          <a class="vehicle-card-link" href="./vehicle.html?id=${encodeURIComponent(vehicle.id)}">
+            <div class="vehicle-image-wrap">
+              ${
+                image
+                  ? `<img class="vehicle-image" src="${image}" alt="${vehicle.title}" />`
+                  : `<div class="vehicle-image placeholder">No Image</div>`
+              }
+              <span class="status-badge status-${status}">${status}</span>
+            </div>
+
+            <div class="vehicle-card-body">
+              <h3>${vehicle.title}</h3>
+              <p class="vehicle-meta">${vehicle.year} • ${vehicle.make} • ${vehicle.model}</p>
+              <p class="vehicle-meta">${vehicle.mileage || ''} km • ${vehicle.transmission || ''} • ${vehicle.fuelType || ''}</p>
+
+              <div class="price-row">
+                <div>
+                  <span class="label">Current Bid</span>
+                  <strong>$${currentBid}</strong>
+                </div>
+                <div>
+                  <span class="label">Increment</span>
+                  <strong>$${Number(vehicle.minimumIncrement || 0).toLocaleString()}</strong>
+                </div>
+              </div>
+            </div>
+          </a>
+        </article>
+      `;
+    }
+
+    function renderVehicles() {
+      const search = searchInput.value.trim().toLowerCase();
+      const filter = statusFilter.value;
+
+      const filtered = allVehicles.filter((vehicle) => {
+        const haystack = `${vehicle.title} ${vehicle.make} ${vehicle.model} ${vehicle.year}`.toLowerCase();
+        const status = getAuctionStatus(vehicle);
+
+        const matchesSearch = !search || haystack.includes(search);
+        const matchesStatus = filter === 'all' ? true : status === filter;
+
+        return vehicle.isVisible && matchesSearch && matchesStatus;
+      });
+
+      if (!filtered.length) {
+        auctionGrid.innerHTML = `<div class="empty-state">No vehicles found.</div>`;
+        return;
+      }
+
+      auctionGrid.innerHTML = filtered.map(vehicleCard).join('');
+    }
+
+    async function loadAuctions() {
+      try {
+        const res = await fetch('/api/content');
+        const data = await res.json();
+        allVehicles = Array.isArray(data.vehicles) ? data.vehicles : [];
+        renderVehicles();
+      } catch (error) {
+        auctionGrid.innerHTML = `<div class="error-state">Failed to load auctions.</div>`;
+      }
+    }
+
+    searchInput.addEventListener('input', renderVehicles);
+    statusFilter.addEventListener('change', renderVehicles);
+
+    loadAuctions();
+  </script>
+</body>
+</html>
