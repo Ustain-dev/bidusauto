@@ -1,0 +1,17 @@
+name = "bidusauto"
+main = "worker.js"
+compatibility_date = "2026-03-14"
+
+[assets]
+directory = "."
+
+[[kv_namespaces]]
+binding = "CONTENT"
+id = "YOUR_CONTENT_KV_ID"
+
+[[r2_buckets]]
+binding = "IMAGES"
+bucket_name = "YOUR_IMAGES_BUCKET"
+
+[vars]
+ADMIN_KEY = "change-this-admin-key"
