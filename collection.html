@@ -159,10 +159,16 @@
       auctionGrid.innerHTML = filtered.map(vehicleCard).join('');
     }
 
-    async function loadAuctions() {
+       async function loadAuctions() {
       try {
         const res = await fetch('/api/content');
         const data = await res.json();
+
+        if (!res.ok) {
+          auctionGrid.innerHTML = `<div class="error-state">${data.error || 'Failed to load auctions.'}</div>`;
+          return;
+        }
+
         allVehicles = Array.isArray(data.vehicles) ? data.vehicles : [];
         renderVehicles();
       } catch (error) {
