@@ -465,8 +465,24 @@ img {
   width: 100%;
   height: 520px;
   object-fit: cover;
+  object-position: center;
   border-radius: 24px;
   background: #1f3a63;
+}
+
+@media (max-width: 768px) {
+  .main-vehicle-image {
+    height: 360px;
+    border-radius: 20px;
+  }
+
+  .premium-image-wrap {
+    height: 220px;
+  }
+
+  .vehicle-image {
+    object-position: center;
+  }
 }
 
 .thumbnail-grid {
@@ -732,38 +748,9 @@ input[readonly] {
     margin-top: 20px;
   }
 }
-@media (max-width: 768px) {
 
-  .header-nav {
-    display: none;
-  }
 
-  .header {
-    padding: 14px 16px;
-  }
 
-  .header-brand span {
-    font-size: 18px;
-  }
-
-}
-
-@media (max-width: 768px) {
-
-  .hero {
-    padding: 28px 16px;
-  }
-
-  .hero h1 {
-    font-size: 34px;
-    line-height: 1.15;
-  }
-
-  .hero p {
-    font-size: 16px;
-  }
-
-}
 
 @media (max-width: 768px) {
 
@@ -785,12 +772,7 @@ input[readonly] {
 
 }
 
-.vehicle-image,
-.main-vehicle-image {
-  width: 100%;
-  height: auto;
-  object-fit: cover;
-}
+
 
 @media (max-width: 768px) {
   .domain-badge {
@@ -881,5 +863,80 @@ input[readonly] {
 
   .logo-text {
     font-size: 16px;
+  }
+}
+@media (max-width: 768px) {
+  .section {
+    padding: 28px 0 52px;
+  }
+
+  .hero-main,
+  .hero-featured,
+  .vehicle-side-card,
+  .vehicle-gallery-card,
+  .step-card,
+  .vehicle-card-body {
+    padding: 20px;
+  }
+
+  .hero-main h1 {
+    font-size: 46px;
+    line-height: 1.02;
+    margin-bottom: 16px;
+  }
+
+  .hero-text,
+  .vehicle-copy,
+  .step-card p {
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  .section-head h2 {
+    font-size: 34px;
+  }
+}
+
+.site-header {
+  box-shadow: 0 8px 30px rgba(0,0,0,0.22);
+}
+
+.hero-main,
+.hero-featured,
+.stat-card,
+.step-card,
+.vehicle-card,
+.vehicle-gallery-card,
+.vehicle-side-card,
+.bid-panel {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.vehicle-card:hover,
+.step-card:hover,
+.stat-card:hover {
+  transform: translateY(-3px);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 18px 48px rgba(0,0,0,0.32);
+}
+
+@media (max-width: 768px) {
+  .header-inner {
+    padding: 10px 0;
+  }
+
+  .logo-badge {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+  }
+
+  .logo {
+    gap: 10px;
+  }
+
+  .btn {
+    min-height: 48px;
   }
 }
