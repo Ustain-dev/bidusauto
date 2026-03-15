@@ -64,6 +64,12 @@ async function loadHomepageFeatured() {
   try {
     const res = await fetch('/api/content');
     const data = await res.json();
+
+    if (!res.ok) {
+      featuredVehiclesContainer.innerHTML = `<div class="error-state">${data.error || 'Failed to load featured vehicles.'}</div>`;
+      return;
+    }
+
     const vehicles = Array.isArray(data.vehicles) ? data.vehicles : [];
     const featured = vehicles.filter(v => v.isVisible).slice(0, 3);
 
