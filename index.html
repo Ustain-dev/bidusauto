@@ -53,24 +53,24 @@
           <h3>2021 BMW M4 Competition</h3>
           <p class="hero-bid-line">Current highest bid: <strong>$48,500</strong></p>
 
-          <div class="countdown-grid">
-            <div class="count-box">
-              <strong>02</strong>
-              <span>Days</span>
-            </div>
-            <div class="count-box">
-              <strong>14</strong>
-              <span>Hours</span>
-            </div>
-            <div class="count-box">
-              <strong>26</strong>
-              <span>Mins</span>
-            </div>
-            <div class="count-box">
-              <strong>08</strong>
-              <span>Secs</span>
-            </div>
-          </div>
+          <div class="countdown-grid" id="heroCountdown">
+  <div class="count-box">
+    <strong id="heroDays">00</strong>
+    <span>Days</span>
+  </div>
+  <div class="count-box">
+    <strong id="heroHours">00</strong>
+    <span>Hours</span>
+  </div>
+  <div class="count-box">
+    <strong id="heroMinutes">00</strong>
+    <span>Mins</span>
+  </div>
+  <div class="count-box">
+    <strong id="heroSeconds">00</strong>
+    <span>Secs</span>
+  </div>
+</div>
         </div>
 
         <div class="stats-grid">
@@ -153,5 +153,63 @@
   </footer>
 
   <script src="./public/assets/js/homepage.js"></script>
+  <script>
+  async function loadHeroCountdown() {
+    try {
+      const res = await fetch('/api/content');
+      const data = await res.json();
+
+      if (!res.ok || !Array.isArray(data.vehicles) || !data.vehicles.length) {
+        return;
+      }
+
+      const liveVehicles = data.vehicles.filter(v => v.isVisible);
+      if (!liveVehicles.length) return;
+
+      const featuredVehicle = liveVehicles[0];
+      startHeroCountdown(featuredVehicle.auctionEnd);
+    } catch (error) {
+      console.error('Failed to load hero countdown', error);
+    }
+  }
+
+  function startHeroCountdown(endDateString) {
+    function update() {
+      const end = new Date(endDateString).getTime();
+      const now = Date.now();
+      const diff = end - now;
+
+      const daysEl = document.getElementById('heroDays');
+      const hoursEl = document.getElementById('heroHours');
+      const minutesEl = document.getElementById('heroMinutes');
+      const secondsEl = document.getElementById('heroSeconds');
+
+      if (!daysEl || !hoursEl || !minutesEl || !secondsEl) return;
+
+      if (diff <= 0) {
+        daysEl.textContent = '00';
+        hoursEl.textContent = '00';
+        minutesEl.textContent = '00';
+        secondsEl.textContent = '00';
+        return;
+      }
+
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+      const minutes = Math.floor((diff / (1000 * 60)) % 60);
+      const seconds = Math.floor((diff / 1000) % 60);
+
+      daysEl.textContent = String(days).padStart(2, '0');
+      hoursEl.textContent = String(hours).padStart(2, '0');
+      minutesEl.textContent = String(minutes).padStart(2, '0');
+      secondsEl.textContent = String(seconds).padStart(2, '0');
+    }
+
+    update();
+    setInterval(update, 1000);
+  }
+
+  loadHeroCountdown();
+</script>
 </body>
 </html>
