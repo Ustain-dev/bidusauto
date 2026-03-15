@@ -1,17 +1,9 @@
 name = "bidusauto-api"
 main = "worker.js"
-compatibility_date = "2026-03-14"
+compatibility_date = "2026-03-15"
 
 [assets]
 directory = "."
 
 [observability]
 enabled = true
-
-[[durable_objects.bindings]]
-name = "AUCTION_ROOMS"
-class_name = "AuctionRoom"
-
-[[migrations]]
-tag = "v1"
-new_classes = ["AuctionRoom"]
