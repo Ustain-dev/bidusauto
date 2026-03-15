@@ -7,3 +7,11 @@ directory = "."
 
 [observability]
 enabled = true
+
+[[kv_namespaces]]
+binding = "CONTENT"
+id = "2079d3f496df4a4d862a9ad21678e4ff"
+
+[[r2_buckets]]
+binding = "IMAGES"
+bucket_name = "images"
