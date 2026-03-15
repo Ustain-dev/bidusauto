@@ -745,7 +745,6 @@ input[readonly] {
     flex-wrap: wrap;
   }
 
-  .countdown-grid,
   .stats-grid,
   .price-panels,
   .spec-grid,
@@ -770,9 +769,6 @@ input[readonly] {
     margin-top: 20px;
   }
 }
-
-
-
 
 @media (max-width: 768px) {
 
