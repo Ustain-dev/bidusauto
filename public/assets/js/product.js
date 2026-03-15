@@ -122,8 +122,8 @@ function renderVehicle(vehicle) {
                 <input class="form-input" id="phone" name="phone" type="text" placeholder="Phone Number" required />
               </div>
 
-              <div class="form-group">
-                <input class="form-input" id="depositAmount" name="depositAmount" type="number" step="0.01" value="44.44" required />
+                            <div class="form-group">
+                <input class="form-input" id="depositAmountDisplay" type="text" value="$44.44 Fixed Deposit" readonly />
               </div>
 
               <button class="btn btn-secondary" type="submit">Pay $44.44 Deposit</button>
@@ -181,7 +181,7 @@ function bindForms(vehicle) {
       email: document.getElementById('email').value.trim(),
       phone: document.getElementById('phone').value.trim(),
       identityNumber: document.getElementById('identityNumber').value.trim(),
-      depositAmount: Number(document.getElementById('depositAmount').value)
+      depositAmount: 44.44
     };
 
     try {
