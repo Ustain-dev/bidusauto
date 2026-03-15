@@ -566,6 +566,10 @@ img {
   color: var(--text);
   font-size: 16px;
 }
+input[readonly] {
+  opacity: 1;
+  cursor: not-allowed;
+}
 
 .form-textarea {
   min-height: 120px;
