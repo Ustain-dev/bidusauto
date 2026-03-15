@@ -1280,3 +1280,11 @@ input[readonly] {
     display: none;
   }
 }
+
+.hero-featured {
+  padding: 18px;
+}
+
+.hero-featured h3 {
+  font-size: 24px;
+}
