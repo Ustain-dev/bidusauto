@@ -1251,3 +1251,10 @@ input[readonly] {
     gap: 14px;
   }
 }
+
+
+@media (max-width: 768px) {
+  .stats-grid {
+    display: none;
+  }
+}
