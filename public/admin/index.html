@@ -7,7 +7,34 @@
   <link rel="stylesheet" href="./admin.css" />
 </head>
 <body>
-  <div class="admin-layout">
+  <div id="adminLoginView" class="admin-auth-wrap">
+    <div class="admin-auth-card">
+      <div class="admin-auth-brand">
+        <div class="admin-auth-badge">BA</div>
+        <h1>Bidus Auto Admin</h1>
+      </div>
+
+      <p class="admin-auth-text">
+        Enter the admin secret key to access the vehicle auction CMS.
+      </p>
+
+      <form id="adminLoginForm" class="admin-login-form">
+        <label for="adminSecretKey">Secret Key</label>
+        <input
+          id="adminSecretKey"
+          name="adminSecretKey"
+          type="password"
+          placeholder="Enter admin secret key"
+          required
+        />
+        <button class="btn btn-primary" type="submit">Login</button>
+      </form>
+
+      <div id="adminLoginMessage"></div>
+    </div>
+  </div>
+
+  <div id="adminAppView" class="admin-layout" style="display: none;">
     <aside class="admin-sidebar">
       <h2>Bidus Auto Admin</h2>
       <nav>
@@ -15,6 +42,10 @@
         <a href="#create">Create / Edit</a>
         <a href="#prequalifications">Deposits</a>
       </nav>
+
+      <div style="margin-top: 24px;">
+        <button id="adminLogoutBtn" class="btn btn-secondary" type="button">Logout</button>
+      </div>
     </aside>
 
     <main class="admin-main">
@@ -24,7 +55,6 @@
             <p class="eyebrow">Admin CMS</p>
             <h1>Create / Edit Vehicle</h1>
           </div>
-          <button id="setAdminKeyBtn" class="btn btn-secondary" type="button">Set Admin Key</button>
         </div>
 
         <form id="vehicleForm" class="admin-form">
@@ -124,7 +154,7 @@
             </div>
             <div>
               <label>Bidder Deposit Required</label>
-<input id="depositRequired" name="depositRequired" type="number" step="0.01" value="44.44" />
+              <input id="depositRequired" name="depositRequired" type="number" step="0.01" value="44.44" />
             </div>
           </div>
 
