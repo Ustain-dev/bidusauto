@@ -4,7 +4,7 @@ export default {
   }
 };
 
-async function handleRequest(request, env) {
+async function handleRequest(request, env, ctx) {
   const url = new URL(request.url);
   const pathname = url.pathname;
 
@@ -41,9 +41,13 @@ async function handleRequest(request, env) {
       return handleGetImage(request, env);
     }
 
+    if (request.method === 'GET' && env.ASSETS) {
+      return env.ASSETS.fetch(request);
+    }
+
     return jsonResponse({ error: 'Not found' }, 404);
   } catch (error) {
-    return jsonResponse({ error: error.message || 'Internal server error' }, 500);
+    return jsonResponse({ error: error.message || 'Internal server error' }, error.status || 500);
   }
 }
 
@@ -74,7 +78,9 @@ function requireAdmin(request, env) {
   const validKey = env.ADMIN_KEY || '';
 
   if (!validKey) {
-    throw new Error('ADMIN_KEY is not configured.');
+    const error = new Error('ADMIN_KEY is not configured.');
+    error.status = 500;
+    throw error;
   }
 
   if (!requestKey || requestKey !== validKey) {
@@ -303,19 +309,30 @@ async function handlePlaceBid(request, env) {
   bids.push(bidRecord);
   await saveBids(env, bids);
 
-  vehicles[vehicleIndex] = {
+  let updatedVehicle = {
     ...vehicle,
     currentBid: bidAmount,
     highestBidderEmail: email,
     updatedAt: new Date().toISOString()
   };
 
+  const now = Date.now();
+  const auctionEnd = new Date(vehicle.auctionEnd).getTime();
+  const remaining = auctionEnd - now;
+  const TWO_MINUTES = 2 * 60 * 1000;
+
+  if (remaining < TWO_MINUTES) {
+    updatedVehicle.auctionEnd = new Date(auctionEnd + TWO_MINUTES).toISOString();
+  }
+
+  vehicles[vehicleIndex] = updatedVehicle;
   await saveVehicles(env, vehicles);
 
   return jsonResponse({
     success: true,
     message: 'Bid placed successfully.',
-    currentBid: bidAmount
+    currentBid: updatedVehicle.currentBid,
+    auctionEnd: updatedVehicle.auctionEnd
   }, 200);
 }
 
@@ -354,7 +371,6 @@ async function handleAdminSave(request, env) {
 
   const vehicles = await getVehicles(env);
   const existingIndex = vehicles.findIndex(item => item.id === id);
-
   const existing = existingIndex >= 0 ? vehicles[existingIndex] : null;
 
   const vehicle = {
