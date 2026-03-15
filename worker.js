@@ -233,9 +233,9 @@ async function handlePrequalify(request, env) {
     return jsonResponse({ error: 'Missing required pre-qualification fields.' }, 400);
   }
 
-  if (depositAmount !== 20) {
-    return jsonResponse({ error: 'Deposit amount must be exactly 20 USD.' }, 400);
-  }
+if (depositAmount !== 44.44) {
+  return jsonResponse({ error: 'Deposit amount must be exactly 44.44 USD.' }, 400);
+}
 
   const vehicles = await getVehicles(env);
   const vehicle = vehicles.find(item => item.id === auctionId);
@@ -256,7 +256,7 @@ async function handlePrequalify(request, env) {
     email,
     phone,
     identityNumber,
-    depositAmount: 20,
+    depositAmount: 44.44,
     depositStatus: 'paid',
     approved: true,
     createdAt: new Date().toISOString()
@@ -392,8 +392,9 @@ async function handleAdminSave(request, env) {
   const auctionEnd = String(body.auctionEnd || '').trim();
   const isVisible = Boolean(body.isVisible);
   const isFeatured = Boolean(body.isFeatured);
-  const depositRequired = Number(body.depositRequired || 20);
+const depositRequired = Number(body.depositRequired || 44.44);
 
+  
   if (!id || !title || !make || !model || !year || !auctionStart || !auctionEnd) {
     return jsonResponse({ error: 'Missing required vehicle fields.' }, 400);
   }
