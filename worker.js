@@ -233,9 +233,9 @@ async function handlePrequalify(request, env) {
     return jsonResponse({ error: 'Missing required pre-qualification fields.' }, 400);
   }
 
-if (depositAmount !== 44.44) {
-  return jsonResponse({ error: 'Deposit amount must be exactly 44.44 USD.' }, 400);
-}
+  if (depositAmount !== 44.44) {
+    return jsonResponse({ error: 'Deposit amount must be exactly 44.44 USD.' }, 400);
+  }
 
   const vehicles = await getVehicles(env);
   const vehicle = vehicles.find(item => item.id === auctionId);
@@ -392,9 +392,8 @@ async function handleAdminSave(request, env) {
   const auctionEnd = String(body.auctionEnd || '').trim();
   const isVisible = Boolean(body.isVisible);
   const isFeatured = Boolean(body.isFeatured);
-const depositRequired = Number(body.depositRequired || 44.44);
+  const depositRequired = Number(body.depositRequired || 44.44);
 
-  
   if (!id || !title || !make || !model || !year || !auctionStart || !auctionEnd) {
     return jsonResponse({ error: 'Missing required vehicle fields.' }, 400);
   }
@@ -509,13 +508,3 @@ function getFileExtension(filename) {
   const ext = parts.length > 1 ? parts.pop().toLowerCase() : 'jpg';
   return ext || 'jpg';
 }
-wrangler.toml in git 
-name = "bidusauto-api"
-main = "worker.js"
-compatibility_date = "2026-03-15"
-
-[assets]
-directory = "."
-
-[observability]
-enabled = true
