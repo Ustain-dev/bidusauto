@@ -747,3 +747,57 @@ input[readonly] {
   }
 
 }
+
+@media (max-width: 768px) {
+
+  .hero {
+    padding: 28px 16px;
+  }
+
+  .hero h1 {
+    font-size: 34px;
+    line-height: 1.15;
+  }
+
+  .hero p {
+    font-size: 16px;
+  }
+
+}
+
+@media (max-width: 768px) {
+
+  .vehicle-card {
+    border-radius: 18px;
+  }
+
+  .vehicle-card-body {
+    padding: 18px;
+  }
+
+  .vehicle-card h3 {
+    font-size: 20px;
+  }
+
+  .vehicle-meta {
+    font-size: 14px;
+  }
+
+}
+
+.vehicle-image,
+.main-vehicle-image {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+@media (max-width: 768px) {
+  .domain-badge {
+    display: none;
+  }
+}
+
+.steps-section {
+  margin-bottom: 80px;
+}
