@@ -732,3 +732,18 @@ input[readonly] {
     margin-top: 20px;
   }
 }
+@media (max-width: 768px) {
+
+  .header-nav {
+    display: none;
+  }
+
+  .header {
+    padding: 14px 16px;
+  }
+
+  .header-brand span {
+    font-size: 18px;
+  }
+
+}
