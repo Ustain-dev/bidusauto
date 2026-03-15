@@ -1,9 +1,13 @@
+const adminLoginView = document.getElementById('adminLoginView');
+const adminAppView = document.getElementById('adminAppView');
+const adminLoginForm = document.getElementById('adminLoginForm');
+const adminLoginMessage = document.getElementById('adminLoginMessage');
+const adminLogoutBtn = document.getElementById('adminLogoutBtn');
 
 const vehicleForm = document.getElementById('vehicleForm');
 const saveMessage = document.getElementById('saveMessage');
 const refreshVehiclesBtn = document.getElementById('refreshVehiclesBtn');
 const adminVehiclesList = document.getElementById('adminVehiclesList');
-const setAdminKeyBtn = document.getElementById('setAdminKeyBtn');
 const vehicleImagesInput = document.getElementById('vehicleImages');
 const uploadedImagesContainer = document.getElementById('uploadedImages');
 
@@ -13,15 +17,19 @@ function getAdminKey() {
   return localStorage.getItem('bidusauto_admin_key') || '';
 }
 
-function setAdminKey() {
-  const current = getAdminKey();
-  const nextKey = window.prompt('Enter admin key', current);
-  if (nextKey !== null) {
-    localStorage.setItem('bidusauto_admin_key', nextKey.trim());
-  }
+function setAdminKey(value) {
+  localStorage.setItem('bidusauto_admin_key', value);
 }
 
-function showMessage(type, message) {
+function clearAdminKey() {
+  localStorage.removeItem('bidusauto_admin_key');
+}
+
+function showLoginMessage(type, message) {
+  adminLoginMessage.innerHTML = `<div class="notice notice-${type}">${message}</div>`;
+}
+
+function showSaveMessage(type, message) {
   saveMessage.innerHTML = `<div class="notice notice-${type}">${message}</div>`;
 }
 
@@ -31,6 +39,83 @@ function formatDatetimeLocalToIso(value) {
   return date.toISOString();
 }
 
+function renderUploadedImages() {
+  uploadedImagesContainer.innerHTML = uploadedImageKeys.map((key) => {
+    return `<div class="item">${key}</div>`;
+  }).join('');
+}
+
+function showAdminApp() {
+  adminLoginView.style.display = 'none';
+  adminAppView.style.display = 'grid';
+  loadVehicles();
+}
+
+function showAdminLogin() {
+  adminLoginView.style.display = 'grid';
+  adminAppView.style.display = 'none';
+}
+
+async function verifyExistingLogin() {
+  const adminKey = getAdminKey();
+
+  if (!adminKey) {
+    showAdminLogin();
+    return;
+  }
+
+  try {
+    const res = await fetch('/api/admin/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ adminKey })
+    });
+
+    if (!res.ok) {
+      clearAdminKey();
+      showAdminLogin();
+      return;
+    }
+
+    showAdminApp();
+  } catch (error) {
+    clearAdminKey();
+    showAdminLogin();
+  }
+}
+
+adminLoginForm.addEventListener('submit', async (event) => {
+  event.preventDefault();
+
+  const adminKey = document.getElementById('adminSecretKey').value.trim();
+
+  try {
+    const res = await fetch('/api/admin/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ adminKey })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      showLoginMessage('error', data.error || 'Login failed.');
+      return;
+    }
+
+    setAdminKey(adminKey);
+    showLoginMessage('success', 'Login successful.');
+    showAdminApp();
+  } catch (error) {
+    showLoginMessage('error', 'Login request failed.');
+  }
+});
+
+adminLogoutBtn.addEventListener('click', () => {
+  clearAdminKey();
+  window.location.reload();
+});
+
 async function uploadSelectedImages() {
   const files = Array.from(vehicleImagesInput.files || []);
 
@@ -39,7 +124,7 @@ async function uploadSelectedImages() {
   }
 
   if (files.length > 20) {
-    showMessage('error', 'You can upload a maximum of 20 images.');
+    showSaveMessage('error', 'You can upload a maximum of 20 images.');
     return [];
   }
 
@@ -69,26 +154,18 @@ async function uploadSelectedImages() {
   return results;
 }
 
-function renderUploadedImages() {
-  uploadedImagesContainer.innerHTML = uploadedImageKeys.map((key) => {
-    return `<div class="item">${key}</div>`;
-  }).join('');
-}
-
 vehicleImagesInput.addEventListener('change', async () => {
   try {
-    showMessage('success', 'Uploading images...');
+    showSaveMessage('success', 'Uploading images...');
     const keys = await uploadSelectedImages();
     uploadedImageKeys = [...uploadedImageKeys, ...keys].slice(0, 20);
     renderUploadedImages();
-    showMessage('success', 'Images uploaded successfully.');
+    showSaveMessage('success', 'Images uploaded successfully.');
     vehicleImagesInput.value = '';
   } catch (error) {
-    showMessage('error', error.message || 'Upload failed.');
+    showSaveMessage('error', error.message || 'Upload failed.');
   }
 });
-
-setAdminKeyBtn.addEventListener('click', setAdminKey);
 
 vehicleForm.addEventListener('submit', async (event) => {
   event.preventDefault();
@@ -113,7 +190,7 @@ vehicleForm.addEventListener('submit', async (event) => {
       auctionEnd: formatDatetimeLocalToIso(document.getElementById('auctionEnd').value),
       isVisible: document.getElementById('isVisible').value === 'true',
       isFeatured: document.getElementById('isFeatured').value === 'true',
-      depositRequired: Number(document.getElementById('depositRequired').value || 20)
+      depositRequired: Number(document.getElementById('depositRequired').value || 44.44)
     };
 
     const res = await fetch('/api/admin/save', {
@@ -128,14 +205,14 @@ vehicleForm.addEventListener('submit', async (event) => {
     const data = await res.json();
 
     if (!res.ok) {
-      showMessage('error', data.error || 'Failed to save vehicle.');
+      showSaveMessage('error', data.error || 'Failed to save vehicle.');
       return;
     }
 
-    showMessage('success', data.message || 'Vehicle saved successfully.');
+    showSaveMessage('success', data.message || 'Vehicle saved successfully.');
     loadVehicles();
   } catch (error) {
-    showMessage('error', error.message || 'Failed to save vehicle.');
+    showSaveMessage('error', error.message || 'Failed to save vehicle.');
   }
 });
 
@@ -181,4 +258,4 @@ async function loadVehicles() {
 
 refreshVehiclesBtn.addEventListener('click', loadVehicles);
 
-loadVehicles();
+verifyExistingLogin();
