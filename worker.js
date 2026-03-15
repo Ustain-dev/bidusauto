@@ -47,7 +47,10 @@ async function handleRequest(request, env, ctx) {
 
     return jsonResponse({ error: 'Not found' }, 404);
   } catch (error) {
-    return jsonResponse({ error: error.message || 'Internal server error' }, error.status || 500);
+    return jsonResponse(
+      { error: error.message || 'Internal server error' },
+      error.status || 500
+    );
   }
 }
 
@@ -99,8 +102,15 @@ function normalizeId(value) {
 }
 
 async function getVehicles(env) {
+  if (!env.CONTENT) {
+    const error = new Error('CONTENT binding is missing.');
+    error.status = 500;
+    throw error;
+  }
+
   const raw = await env.CONTENT.get('vehicles');
   if (!raw) return [];
+
   try {
     return JSON.parse(raw);
   } catch {
@@ -115,6 +125,7 @@ async function saveVehicles(env, vehicles) {
 async function getPrequalifications(env) {
   const raw = await env.CONTENT.get('prequalifications');
   if (!raw) return [];
+
   try {
     return JSON.parse(raw);
   } catch {
@@ -129,6 +140,7 @@ async function savePrequalifications(env, items) {
 async function getBids(env) {
   const raw = await env.CONTENT.get('bids');
   if (!raw) return [];
+
   try {
     return JSON.parse(raw);
   } catch {
@@ -162,12 +174,14 @@ async function handleGetContent(request, env) {
       requireAdmin(request, env);
       return jsonResponse({ vehicles }, 200);
     } catch (error) {
-      return jsonResponse({ error: error.message || 'Unauthorized' }, error.status || 401);
+      return jsonResponse(
+        { error: error.message || 'Unauthorized' },
+        error.status || 401
+      );
     }
   }
 
   const publicVehicles = vehicles.filter(vehicle => vehicle.isVisible);
-
   return jsonResponse({ vehicles: publicVehicles }, 200);
 }
 
@@ -340,7 +354,10 @@ async function handleAdminSave(request, env) {
   try {
     requireAdmin(request, env);
   } catch (error) {
-    return jsonResponse({ error: error.message || 'Unauthorized' }, error.status || 401);
+    return jsonResponse(
+      { error: error.message || 'Unauthorized' },
+      error.status || 401
+    );
   }
 
   const body = await request.json();
@@ -417,7 +434,14 @@ async function handleUploadImage(request, env) {
   try {
     requireAdmin(request, env);
   } catch (error) {
-    return jsonResponse({ error: error.message || 'Unauthorized' }, error.status || 401);
+    return jsonResponse(
+      { error: error.message || 'Unauthorized' },
+      error.status || 401
+    );
+  }
+
+  if (!env.IMAGES) {
+    return jsonResponse({ error: 'IMAGES binding is missing.' }, 500);
   }
 
   const formData = await request.formData();
@@ -443,6 +467,10 @@ async function handleUploadImage(request, env) {
 }
 
 async function handleGetImage(request, env) {
+  if (!env.IMAGES) {
+    return new Response('IMAGES binding is missing', { status: 500 });
+  }
+
   const url = new URL(request.url);
   const key = decodeURIComponent(url.pathname.replace('/images/', ''));
 
@@ -460,15 +488,11 @@ async function handleGetImage(request, env) {
   object.writeHttpMetadata(headers);
   headers.set('Cache-Control', 'public, max-age=3600');
 
-  return new Response(object.body, {
-    headers
-  });
+  return new Response(object.body, { headers });
 }
 
 function getFileExtension(filename) {
   const parts = String(filename || '').split('.');
   const ext = parts.length > 1 ? parts.pop().toLowerCase() : 'jpg';
-
-  if (!ext) return 'jpg';
-  return ext;
+  return ext || 'jpg';
 }
