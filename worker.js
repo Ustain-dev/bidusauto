@@ -29,6 +29,10 @@ async function handleRequest(request, env, ctx) {
       return handlePlaceBid(request, env);
     }
 
+        if (pathname === '/api/admin/login' && request.method === 'POST') {
+      return handleAdminLogin(request, env);
+    }
+
     if (pathname === '/api/admin/save' && request.method === 'POST') {
       return handleAdminSave(request, env);
     }
@@ -369,6 +373,33 @@ async function handlePlaceBid(request, env) {
     currentBid: updatedVehicle.currentBid,
     auctionEnd: updatedVehicle.auctionEnd
   }, 200);
+}
+
+async function handleAdminLogin(request, env) {
+  try {
+    const body = await request.json();
+    const adminKey = String(body.adminKey || '').trim();
+    const validKey = env.ADMIN_KEY || '';
+
+    if (!validKey) {
+      return jsonResponse({ error: 'ADMIN_KEY is not configured.' }, 500);
+    }
+
+    if (!adminKey) {
+      return jsonResponse({ error: 'Admin key is required.' }, 400);
+    }
+
+    if (adminKey !== validKey) {
+      return jsonResponse({ error: 'Invalid admin key.' }, 401);
+    }
+
+    return jsonResponse({
+      success: true,
+      message: 'Login successful.'
+    }, 200);
+  } catch (error) {
+    return jsonResponse({ error: 'Invalid login request.' }, 400);
+  }
 }
 
 async function handleAdminSave(request, env) {
