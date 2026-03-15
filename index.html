@@ -7,25 +7,48 @@
   <link rel="stylesheet" href="./styles.css" />
 </head>
 <body>
-  <header class="site-header">
-    <div class="container header-inner">
-      <a class="logo" href="./index.html">
-        <span class="logo-badge">BA</span>
-        <span class="logo-text">Bidus Auto Auctions</span>
-      </a>
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="logo" href="./index.html">
+      <span class="logo-badge">BA</span>
+      <span class="logo-text">Bidus Auto Auctions</span>
+    </a>
 
-      <nav class="main-nav">
-        <a href="./index.html">Home</a>
-        <a href="./collection.html">Auctions</a>
-        <a href="#featured">Featured</a>
-        <a href="#how-bidding-works">How Bidding Works</a>
-      </nav>
+    <nav class="main-nav" id="mainNav">
+      <a href="./index.html">Home</a>
+      <a href="./collection.html">Auctions</a>
+      <a href="#featured">Featured</a>
+      <a href="#how-bidding-works">How Bidding Works</a>
+    </nav>
 
-      <div class="header-actions">
-        <a class="btn btn-primary" href="./collection.html">Browse Auctions</a>
-      </div>
+    <div class="header-actions">
+      <a class="btn btn-primary desktop-browse-btn" href="./collection.html">Browse Auctions</a>
+
+      <button
+        class="menu-toggle"
+        id="menuToggle"
+        type="button"
+        aria-label="Open menu"
+        aria-expanded="false"
+        aria-controls="mobileMenu"
+      >
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
     </div>
-  </header>
+  </div>
+
+  <div class="mobile-menu" id="mobileMenu">
+    <div class="container mobile-menu-inner">
+      <a href="./index.html">Home</a>
+      <a href="./collection.html">Auctions</a>
+      <a href="#featured">Featured</a>
+      <a href="#how-bidding-works">How Bidding Works</a>
+      <a class="btn btn-primary mobile-menu-btn" href="./collection.html">Browse Auctions</a>
+    </div>
+  </div>
+</header>
 
   <section class="hero hero-premium">
     <div class="container hero-grid">
@@ -210,6 +233,26 @@
   }
 
   loadHeroCountdown();
+</script>
+  <script>
+  const menuToggle = document.getElementById('menuToggle');
+  const mobileMenu = document.getElementById('mobileMenu');
+
+  if (menuToggle && mobileMenu) {
+    menuToggle.addEventListener('click', () => {
+      const isOpen = mobileMenu.classList.toggle('open');
+      menuToggle.classList.toggle('open');
+      menuToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    });
+
+    mobileMenu.querySelectorAll('a').forEach((link) => {
+      link.addEventListener('click', () => {
+        mobileMenu.classList.remove('open');
+        menuToggle.classList.remove('open');
+        menuToggle.setAttribute('aria-expanded', 'false');
+      });
+    });
+  }
 </script>
 </body>
 </html>
