@@ -1,22 +1,10 @@
 const featuredVehiclesContainer = document.getElementById('featuredVehicles');
 
-function getAuctionStatus(vehicle) {
-  const now = Date.now();
-  const start = new Date(vehicle.auctionStart).getTime();
-  const end = new Date(vehicle.auctionEnd).getTime();
-
-  if (!vehicle.isVisible) return 'hidden';
-  if (now < start) return 'scheduled';
-  if (now > end) return 'ended';
-  return 'live';
-}
-
 function renderFeaturedCard(vehicle) {
   const image = vehicle.images && vehicle.images.length ? `/images/${vehicle.images[0]}` : '';
-  const status = getAuctionStatus(vehicle);
 
   let badge = 'Featured';
-  if (status === 'live') badge = vehicle.isFeatured ? 'Featured' : 'Live';
+  if (!vehicle.isFeatured) badge = 'Live';
 
   return `
     <article class="vehicle-card premium-card">
@@ -52,7 +40,7 @@ function renderFeaturedCard(vehicle) {
 
           <div class="card-actions">
             <span class="btn btn-secondary fake-btn">View Details</span>
-            <span class="btn btn-primary fake-btn">Place Bid</span>
+            <span class="btn btn-primary fake-btn">Pre-Qualify</span>
           </div>
         </div>
       </a>
