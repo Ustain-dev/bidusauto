@@ -2,8 +2,6 @@ const vehicleDetail = document.getElementById('vehicleDetail');
 const params = new URLSearchParams(window.location.search);
 const vehicleId = params.get('id');
 
-let currentVehicle = null;
-
 function escapeHtml(value) {
   return String(value || '')
     .replaceAll('&', '&amp;')
@@ -64,9 +62,7 @@ function renderVehicle(vehicle) {
         <div class="vehicle-side-card">
           <p class="eyebrow">Live Auction</p>
           <h1>${escapeHtml(vehicle.title)}</h1>
-          <p class="vehicle-copy">
-            ${escapeHtml(vehicle.description || 'Premium vehicle auction listing.')}
-          </p>
+          <p class="vehicle-copy">${escapeHtml(vehicle.description || 'Premium vehicle auction listing.')}</p>
 
           <div class="spec-grid">
             <div class="spec-item">
@@ -101,8 +97,8 @@ function renderVehicle(vehicle) {
           <div class="bid-panel">
             <h3>Pre-Qualify Before Bidding</h3>
             <p>
-              All bidders must complete a <strong>$44.44 refundable deposit</strong> before
-              they can place bids. Once verified, the bidder can submit bids above the minimum next bid.
+              All bidders must complete a <strong>$44.44 refundable deposit</strong> before they can place bids.
+              Once verified, the bidder can submit bids above the minimum next bid.
             </p>
 
             <form id="prequalifyForm">
@@ -122,7 +118,7 @@ function renderVehicle(vehicle) {
                 <input class="form-input" id="phone" name="phone" type="text" placeholder="Phone Number" required />
               </div>
 
-                            <div class="form-group">
+              <div class="form-group">
                 <input class="form-input" id="depositAmountDisplay" type="text" value="$44.44 Fixed Deposit" readonly />
               </div>
 
@@ -248,8 +244,7 @@ async function loadVehicle() {
       return;
     }
 
-    currentVehicle = data.vehicle;
-    renderVehicle(currentVehicle);
+    renderVehicle(data.vehicle);
   } catch (error) {
     vehicleDetail.innerHTML = `<div class="error-state">Failed to load vehicle.</div>`;
   }
