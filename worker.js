@@ -509,8 +509,6 @@ function getFileExtension(filename) {
   const ext = parts.length > 1 ? parts.pop().toLowerCase() : 'jpg';
   return ext || 'jpg';
 }
-i am asking the code in worker and worker.js are different - why?
-
 wrangler.toml in git 
 name = "bidusauto-api"
 main = "worker.js"
