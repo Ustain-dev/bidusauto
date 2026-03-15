@@ -123,6 +123,12 @@ async function saveVehicles(env, vehicles) {
 }
 
 async function getPrequalifications(env) {
+  if (!env.CONTENT) {
+    const error = new Error('CONTENT binding is missing.');
+    error.status = 500;
+    throw error;
+  }
+
   const raw = await env.CONTENT.get('prequalifications');
   if (!raw) return [];
 
@@ -138,6 +144,12 @@ async function savePrequalifications(env, items) {
 }
 
 async function getBids(env) {
+  if (!env.CONTENT) {
+    const error = new Error('CONTENT binding is missing.');
+    error.status = 500;
+    throw error;
+  }
+
   const raw = await env.CONTENT.get('bids');
   if (!raw) return [];
 
@@ -496,3 +508,15 @@ function getFileExtension(filename) {
   const ext = parts.length > 1 ? parts.pop().toLowerCase() : 'jpg';
   return ext || 'jpg';
 }
+i am asking the code in worker and worker.js are different - why?
+
+wrangler.toml in git 
+name = "bidusauto-api"
+main = "worker.js"
+compatibility_date = "2026-03-15"
+
+[assets]
+directory = "."
+
+[observability]
+enabled = true
