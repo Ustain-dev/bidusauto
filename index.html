@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,41 +9,88 @@
 <body>
   <header class="site-header">
     <div class="container header-inner">
-      <a class="logo" href="./index.html">Bidus Auto</a>
+      <a class="logo" href="./index.html">
+        <span class="logo-badge">BA</span>
+        <span class="logo-text">Bidus Auto Auctions</span>
+      </a>
 
       <nav class="main-nav">
         <a href="./index.html">Home</a>
         <a href="./collection.html">Auctions</a>
+        <a href="#featured">Featured</a>
+        <a href="#how-bidding-works">How Bidding Works</a>
       </nav>
 
-      <a class="btn btn-primary" href="./collection.html">Browse Auctions</a>
+      <div class="header-actions">
+        <a class="btn btn-primary" href="./collection.html">Browse Auctions</a>
+      </div>
     </div>
   </header>
 
-  <section class="hero">
+  <section class="hero hero-premium">
     <div class="container hero-grid">
-      <div class="hero-copy">
-        <p class="eyebrow">Live Auto Auctions</p>
-        <h1>Bid on quality vehicles through a clean online auction experience.</h1>
+      <div class="hero-main card-glow">
+        <p class="eyebrow">Live Vehicle Auctions</p>
+        <h1>Bid on premium vehicles in a clean, modern auction experience.</h1>
         <p class="hero-text">
-          Browse active auctions, view detailed vehicle information, complete bidder pre-qualification,
-          and place bids online.
+          Browse live vehicles, view detailed auction pages, complete bidder pre-qualification,
+          pay the required deposit, and place bids online.
         </p>
 
         <div class="hero-actions">
           <a class="btn btn-primary" href="./collection.html">View Live Auctions</a>
-          <a class="btn btn-secondary" href="#featured">Featured Vehicles</a>
+          <a class="btn btn-secondary" href="./collection.html">Open Featured Vehicle</a>
+        </div>
+
+        <div class="hero-car-wrap">
+          <div class="car-illustration hero-car"></div>
         </div>
       </div>
 
-      <div class="hero-card">
-        <h3>Before You Bid</h3>
-        <ul>
-          <li>Browse live vehicles</li>
-          <li>Pre-qualify with a $20 deposit</li>
-          <li>Get approved to bid</li>
-          <li>Place bids during the auction window</li>
-        </ul>
+      <div class="hero-side">
+        <div class="hero-featured card-glow">
+          <p class="eyebrow small">Featured Auction Ending Soon</p>
+          <h3>2021 BMW M4 Competition</h3>
+          <p class="hero-bid-line">Current highest bid: <strong>$48,500</strong></p>
+
+          <div class="countdown-grid">
+            <div class="count-box">
+              <strong>02</strong>
+              <span>Days</span>
+            </div>
+            <div class="count-box">
+              <strong>14</strong>
+              <span>Hours</span>
+            </div>
+            <div class="count-box">
+              <strong>26</strong>
+              <span>Mins</span>
+            </div>
+            <div class="count-box">
+              <strong>08</strong>
+              <span>Secs</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card card-glow">
+            <span class="stat-label">Live Auctions</span>
+            <strong>24</strong>
+          </div>
+          <div class="stat-card card-glow">
+            <span class="stat-label">Bids Today</span>
+            <strong>186</strong>
+          </div>
+          <div class="stat-card card-glow">
+            <span class="stat-label">Vehicles Sold</span>
+            <strong>312</strong>
+          </div>
+          <div class="stat-card card-glow">
+            <span class="stat-label">New Listings</span>
+            <strong>9</strong>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -65,31 +111,40 @@
     </div>
   </section>
 
-  <section class="section section-alt">
-    <div class="container steps-grid">
-      <div class="step-card">
-        <div class="step-number">1</div>
-        <h3>Browse Auctions</h3>
-        <p>View active vehicles, pricing, photos, and auction end times.</p>
+  <section class="section section-alt" id="how-bidding-works">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">How It Works</p>
+          <h2>How Bidding Works</h2>
+        </div>
       </div>
 
-      <div class="step-card">
-        <div class="step-number">2</div>
-        <h3>Pre-Qualify</h3>
-        <p>Submit your details and complete the required $20 deposit before bidding.</p>
-      </div>
+      <div class="steps-grid">
+        <div class="step-card card-glow">
+          <div class="step-number">1</div>
+          <h3>Browse Vehicles</h3>
+          <p>Open the auction listing and review specifications, images, current bid, and auction timing.</p>
+        </div>
 
-      <div class="step-card">
-        <div class="step-number">3</div>
-        <h3>Place Bids</h3>
-        <p>Once approved, place bids that meet the current bid and minimum increment.</p>
+        <div class="step-card card-glow">
+          <div class="step-number">2</div>
+          <h3>Pre-Qualify</h3>
+          <p>Complete bidder pre-qualification and pay the required <strong>$44.44 deposit</strong> before bidding.</p>
+        </div>
+
+        <div class="step-card card-glow">
+          <div class="step-number">3</div>
+          <h3>Bid Live</h3>
+          <p>Once approved, place bids above the minimum next bid. Anti-sniping extends auctions near closing time.</p>
+        </div>
       </div>
     </div>
   </section>
 
   <footer class="site-footer">
     <div class="container footer-inner">
-      <p>© 2026 Bidus Auto. All rights reserved.</p>
+      <p>© 2026 Bidus Auto Auctions. All rights reserved.</p>
       <div class="footer-links">
         <a href="./index.html">Home</a>
         <a href="./collection.html">Auctions</a>
