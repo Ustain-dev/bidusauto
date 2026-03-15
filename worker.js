@@ -41,7 +41,16 @@ async function handleRequest(request, env, ctx) {
       return handleGetImage(request, env);
     }
 
-    if (request.method === 'GET' && env.ASSETS) {
+        if (request.method === 'GET' && env.ASSETS) {
+      if (
+        pathname.startsWith('/.git') ||
+        pathname.startsWith('/.wrangler') ||
+        pathname === '/wrangler.toml' ||
+        pathname === '/worker.js'
+      ) {
+        return new Response('Not found', { status: 404 });
+      }
+
       return env.ASSETS.fetch(request);
     }
 
