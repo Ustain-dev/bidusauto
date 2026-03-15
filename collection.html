@@ -54,138 +54,135 @@
   </footer>
 
   <script>
-    const auctionGrid = document.getElementById('auctionGrid');
-    const pillButtons = Array.from(document.querySelectorAll('.pill'));
-    let allVehicles = [];
-    let currentFilter = 'all';
+  const auctionGrid = document.getElementById('auctionGrid');
+  const pillButtons = Array.from(document.querySelectorAll('.pill'));
+  let allVehicles = [];
+  let currentFilter = 'all';
 
-    function getAuctionStatus(vehicle) {
-      const now = Date.now();
-      const start = new Date(vehicle.auctionStart).getTime();
-      const end = new Date(vehicle.auctionEnd).getTime();
+  function getAuctionStatus(vehicle) {
+    const now = Date.now();
+    const start = new Date(vehicle.auctionStart).getTime();
+    const end = new Date(vehicle.auctionEnd).getTime();
 
-      if (!vehicle.isVisible) return 'hidden';
-      if (now < start) return 'scheduled';
-      if (now > end) return 'ended';
-      return 'live';
-    }
+    if (!vehicle.isVisible) return 'hidden';
+    if (now < start) return 'scheduled';
+    if (now > end) return 'ended';
+    return 'live';
+  }
 
-    function getVehicleCategory(vehicle) {
-      const combined = `${vehicle.title} ${vehicle.make} ${vehicle.model}`.toLowerCase();
+  function getVehicleCategory(vehicle) {
+    const combined = `${vehicle.title} ${vehicle.make} ${vehicle.model}`.toLowerCase();
 
-      if (combined.includes('hilux') || combined.includes('suv')) return 'suv';
-      if (combined.includes('bmw m') || combined.includes('competition') || combined.includes('amg') || combined.includes('rs')) return 'performance';
-      if (combined.includes('sedan')) return 'sedan';
-      return 'all';
-    }
+    if (combined.includes('hilux') || combined.includes('suv')) return 'suv';
+    if (combined.includes('bmw m') || combined.includes('competition') || combined.includes('amg') || combined.includes('rs')) return 'performance';
+    if (combined.includes('sedan')) return 'sedan';
+    return 'all';
+  }
 
-    function isEndingSoon(vehicle) {
-      const end = new Date(vehicle.auctionEnd).getTime();
-      const now = Date.now();
-      const diff = end - now;
-      return diff > 0 && diff <= 1000 * 60 * 60 * 24;
-    }
+  function isEndingSoon(vehicle) {
+    const end = new Date(vehicle.auctionEnd).getTime();
+    const now = Date.now();
+    const diff = end - now;
+    return diff > 0 && diff <= 1000 * 60 * 60 * 24;
+  }
 
-    function vehicleCard(vehicle) {
-      const status = getAuctionStatus(vehicle);
-      const image = vehicle.images && vehicle.images.length ? `/images/${vehicle.images[0]}` : '';
-      const currentBid = Number(vehicle.currentBid || vehicle.startingBid || 0).toLocaleString();
-      const minIncrement = Number(vehicle.minimumIncrement || 0).toLocaleString();
+  function vehicleCard(vehicle) {
+    const image = vehicle.images && vehicle.images.length ? `/images/${vehicle.images[0]}` : '';
+    let badge = 'Live';
 
-      let badge = 'Live';
-      if (vehicle.isFeatured) badge = 'Featured';
-      if (isEndingSoon(vehicle)) badge = 'Ending Soon';
+    if (vehicle.isFeatured) badge = 'Featured';
+    if (isEndingSoon(vehicle)) badge = 'Ending Soon';
 
-      return `
-        <article class="vehicle-card premium-card">
-          <a class="vehicle-card-link" href="./vehicle.html?id=${encodeURIComponent(vehicle.id)}">
-            <div class="vehicle-image-wrap premium-image-wrap">
-              ${
-                image
-                  ? `<img class="vehicle-image" src="${image}" alt="${vehicle.title}" />`
-                  : `<div class="vehicle-image placeholder"><div class="car-illustration"></div></div>`
-              }
-              <span class="top-tag">${badge}</span>
-            </div>
+    return `
+      <article class="vehicle-card premium-card">
+        <a class="vehicle-card-link" href="./vehicle.html?id=${encodeURIComponent(vehicle.id)}">
+          <div class="vehicle-image-wrap premium-image-wrap">
+            ${
+              image
+                ? `<img class="vehicle-image" src="${image}" alt="${vehicle.title}" />`
+                : `<div class="vehicle-image placeholder"><div class="car-illustration"></div></div>`
+            }
+            <span class="top-tag">${badge}</span>
+          </div>
 
-            <div class="vehicle-card-body">
-              <h3>${vehicle.title}</h3>
-              <p class="vehicle-meta">${Number(vehicle.mileage || 0).toLocaleString()} km &nbsp;&nbsp; ${vehicle.transmission || ''} &nbsp;&nbsp; ${vehicle.fuelType || ''}</p>
+          <div class="vehicle-card-body">
+            <h3>${vehicle.title}</h3>
+            <p class="vehicle-meta">${Number(vehicle.mileage || 0).toLocaleString()} km &nbsp;&nbsp; ${vehicle.transmission || ''} &nbsp;&nbsp; ${vehicle.fuelType || ''}</p>
 
-              <div class="price-panels">
-                <div class="mini-price-card">
-                  <span class="label">Current Bid</span>
-                  <strong>$${currentBid}</strong>
-                </div>
-                <div class="mini-price-card">
-                  <span class="label">Min Increment</span>
-                  <strong>$${minIncrement}</strong>
-                </div>
+            <div class="price-panels">
+              <div class="mini-price-card">
+                <span class="label">Current Bid</span>
+                <strong>$${Number(vehicle.currentBid || vehicle.startingBid || 0).toLocaleString()}</strong>
               </div>
-
-              <div class="progress-block">
-                <span class="progress-label">Auction progress</span>
-                <div class="progress-bar"><span></span></div>
-              </div>
-
-              <div class="card-actions">
-                <span class="btn btn-secondary fake-btn">View Details</span>
-                <span class="btn btn-primary fake-btn">Place Bid</span>
+              <div class="mini-price-card">
+                <span class="label">Min Increment</span>
+                <strong>$${Number(vehicle.minimumIncrement || 0).toLocaleString()}</strong>
               </div>
             </div>
-          </a>
-        </article>
-      `;
+
+            <div class="progress-block">
+              <span class="progress-label">Auction progress</span>
+              <div class="progress-bar"><span></span></div>
+            </div>
+
+            <div class="card-actions">
+              <span class="btn btn-secondary fake-btn">View Details</span>
+              <span class="btn btn-primary fake-btn">Pre-Qualify</span>
+            </div>
+          </div>
+        </a>
+      </article>
+    `;
+  }
+
+  function applyFilter(vehicle) {
+    if (!vehicle.isVisible) return false;
+
+    if (currentFilter === 'all') return true;
+    if (currentFilter === 'ending-soon') return isEndingSoon(vehicle);
+
+    const category = getVehicleCategory(vehicle);
+    return category === currentFilter;
+  }
+
+  function renderVehicles() {
+    const filtered = allVehicles.filter(applyFilter);
+
+    if (!filtered.length) {
+      auctionGrid.innerHTML = `<div class="empty-state">No vehicles found.</div>`;
+      return;
     }
 
-    function applyFilter(vehicle) {
-      if (!vehicle.isVisible) return false;
+    auctionGrid.innerHTML = filtered.map(vehicleCard).join('');
+  }
 
-      if (currentFilter === 'all') return true;
-      if (currentFilter === 'ending-soon') return isEndingSoon(vehicle);
+  async function loadAuctions() {
+    try {
+      const res = await fetch('/api/content');
+      const data = await res.json();
 
-      const category = getVehicleCategory(vehicle);
-      return category === currentFilter;
-    }
-
-    function renderVehicles() {
-      const filtered = allVehicles.filter(applyFilter);
-
-      if (!filtered.length) {
-        auctionGrid.innerHTML = `<div class="empty-state">No vehicles found.</div>`;
+      if (!res.ok) {
+        auctionGrid.innerHTML = `<div class="error-state">${data.error || 'Failed to load auctions.'}</div>`;
         return;
       }
 
-      auctionGrid.innerHTML = filtered.map(vehicleCard).join('');
+      allVehicles = Array.isArray(data.vehicles) ? data.vehicles : [];
+      renderVehicles();
+    } catch (error) {
+      auctionGrid.innerHTML = `<div class="error-state">Failed to load auctions.</div>`;
     }
+  }
 
-       async function loadAuctions() {
-      try {
-        const res = await fetch('/api/content');
-        const data = await res.json();
-
-        if (!res.ok) {
-          auctionGrid.innerHTML = `<div class="error-state">${data.error || 'Failed to load auctions.'}</div>`;
-          return;
-        }
-
-        allVehicles = Array.isArray(data.vehicles) ? data.vehicles : [];
-        renderVehicles();
-      } catch (error) {
-        auctionGrid.innerHTML = `<div class="error-state">Failed to load auctions.</div>`;
-      }
-    }
-
-    pillButtons.forEach((button) => {
-      button.addEventListener('click', () => {
-        pillButtons.forEach((item) => item.classList.remove('active'));
-        button.classList.add('active');
-        currentFilter = button.dataset.filter;
-        renderVehicles();
-      });
+  pillButtons.forEach((button) => {
+    button.addEventListener('click', () => {
+      pillButtons.forEach((item) => item.classList.remove('active'));
+      button.classList.add('active');
+      currentFilter = button.dataset.filter;
+      renderVehicles();
     });
+  });
 
-    loadAuctions();
-  </script>
+  loadAuctions();
+</script>
 </body>
 </html>
