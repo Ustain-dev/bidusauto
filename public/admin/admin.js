@@ -224,8 +224,37 @@ function vehicleItem(vehicle) {
       <p>Current Bid: $${Number(vehicle.currentBid || vehicle.startingBid || 0).toLocaleString()}</p>
       <p>Visible: ${vehicle.isVisible ? 'true' : 'false'} | Featured: ${vehicle.isFeatured ? 'true' : 'false'}</p>
       <p>ID: ${vehicle.id}</p>
+      <div style="margin-top: 12px;">
+        <button class="btn btn-secondary edit-vehicle-btn" type="button" data-id="${vehicle.id}">Edit Vehicle</button>
+      </div>
     </div>
   `;
+}
+
+function populateVehicleForm(vehicle) {
+  document.getElementById('id').value = vehicle.id || '';
+  document.getElementById('title').value = vehicle.title || '';
+  document.getElementById('make').value = vehicle.make || '';
+  document.getElementById('model').value = vehicle.model || '';
+  document.getElementById('year').value = vehicle.year || '';
+  document.getElementById('mileage').value = vehicle.mileage || '';
+  document.getElementById('transmission').value = vehicle.transmission || '';
+  document.getElementById('fuelType').value = vehicle.fuelType || '';
+  document.getElementById('condition').value = vehicle.condition || '';
+  document.getElementById('description').value = vehicle.description || '';
+  document.getElementById('videoUrl').value = vehicle.videoUrl || '';
+  document.getElementById('startingBid').value = vehicle.startingBid || '';
+  document.getElementById('minimumIncrement').value = vehicle.minimumIncrement || '';
+  document.getElementById('auctionStart').value = vehicle.auctionStart ? new Date(vehicle.auctionStart).toISOString().slice(0, 16) : '';
+  document.getElementById('auctionEnd').value = vehicle.auctionEnd ? new Date(vehicle.auctionEnd).toISOString().slice(0, 16) : '';
+  document.getElementById('isVisible').value = String(vehicle.isVisible);
+  document.getElementById('isFeatured').value = String(vehicle.isFeatured);
+  document.getElementById('depositRequired').value = vehicle.depositRequired || 44.44;
+
+  uploadedImageKeys = Array.isArray(vehicle.images) ? [...vehicle.images] : [];
+  renderUploadedImages();
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 async function loadVehicles() {
@@ -250,7 +279,19 @@ async function loadVehicles() {
       return;
     }
 
-    adminVehiclesList.innerHTML = vehicles.map(vehicleItem).join('');
+adminVehiclesList.innerHTML = vehicles.map(vehicleItem).join('');
+
+const editButtons = document.querySelectorAll('.edit-vehicle-btn');
+editButtons.forEach((button) => {
+  button.addEventListener('click', () => {
+    const vehicleId = button.dataset.id;
+    const vehicle = vehicles.find(item => item.id === vehicleId);
+    if (vehicle) {
+      populateVehicleForm(vehicle);
+    }
+  });
+});
+  
   } catch (error) {
     adminVehiclesList.innerHTML = `<div class="notice notice-error">Failed to load vehicles.</div>`;
   }
