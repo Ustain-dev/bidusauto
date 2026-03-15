@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,37 +9,32 @@
 <body>
   <header class="site-header">
     <div class="container header-inner">
-      <a class="logo" href="./index.html">Bidus Auto</a>
+      <a class="logo" href="./index.html">
+        <span class="logo-badge">BA</span>
+        <span class="logo-text">Bidus Auto Auctions</span>
+      </a>
 
       <nav class="main-nav">
         <a href="./index.html">Home</a>
-        <a href="./collection.html" class="active">Auctions</a>
+        <a href="./collection.html">Auctions</a>
+        <a href="./index.html#featured">Featured</a>
+        <a href="./index.html#how-bidding-works">How Bidding Works</a>
       </nav>
 
-      <a class="btn btn-primary" href="./collection.html">Browse Auctions</a>
+      <div class="header-actions">
+        <a class="btn btn-primary" href="./collection.html">Browse Auctions</a>
+      </div>
     </div>
   </header>
 
-  <section class="page-hero">
+  <section class="section collection-section">
     <div class="container">
-      <p class="eyebrow">Auction Listings</p>
-      <h1>Live Vehicle Auctions</h1>
-      <p class="hero-text">
-        Browse all available auction vehicles and open each listing to view full details and bid requirements.
-      </p>
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="container">
-      <div class="toolbar">
-        <input id="searchInput" class="search-input" type="text" placeholder="Search make, model, year..." />
-        <select id="statusFilter" class="select-input">
-          <option value="all">All</option>
-          <option value="live">Live</option>
-          <option value="scheduled">Scheduled</option>
-          <option value="ended">Ended</option>
-        </select>
+      <div class="filter-pills">
+        <button class="pill active" type="button" data-filter="all">All</button>
+        <button class="pill" type="button" data-filter="suv">SUV</button>
+        <button class="pill" type="button" data-filter="sedan">Sedan</button>
+        <button class="pill" type="button" data-filter="performance">Performance</button>
+        <button class="pill" type="button" data-filter="ending-soon">Ending Soon</button>
       </div>
 
       <div id="auctionGrid" class="vehicle-grid">
@@ -51,7 +45,7 @@
 
   <footer class="site-footer">
     <div class="container footer-inner">
-      <p>© 2026 Bidus Auto. All rights reserved.</p>
+      <p>© 2026 Bidus Auto Auctions. All rights reserved.</p>
       <div class="footer-links">
         <a href="./index.html">Home</a>
         <a href="./collection.html">Auctions</a>
@@ -61,10 +55,9 @@
 
   <script>
     const auctionGrid = document.getElementById('auctionGrid');
-    const searchInput = document.getElementById('searchInput');
-    const statusFilter = document.getElementById('statusFilter');
-
+    const pillButtons = Array.from(document.querySelectorAll('.pill'));
     let allVehicles = [];
+    let currentFilter = 'all';
 
     function getAuctionStatus(vehicle) {
       const now = Date.now();
@@ -77,37 +70,67 @@
       return 'live';
     }
 
+    function getVehicleCategory(vehicle) {
+      const combined = `${vehicle.title} ${vehicle.make} ${vehicle.model}`.toLowerCase();
+
+      if (combined.includes('hilux') || combined.includes('suv')) return 'suv';
+      if (combined.includes('bmw m') || combined.includes('competition') || combined.includes('amg') || combined.includes('rs')) return 'performance';
+      if (combined.includes('sedan')) return 'sedan';
+      return 'all';
+    }
+
+    function isEndingSoon(vehicle) {
+      const end = new Date(vehicle.auctionEnd).getTime();
+      const now = Date.now();
+      const diff = end - now;
+      return diff > 0 && diff <= 1000 * 60 * 60 * 24;
+    }
+
     function vehicleCard(vehicle) {
       const status = getAuctionStatus(vehicle);
       const image = vehicle.images && vehicle.images.length ? `/images/${vehicle.images[0]}` : '';
       const currentBid = Number(vehicle.currentBid || vehicle.startingBid || 0).toLocaleString();
+      const minIncrement = Number(vehicle.minimumIncrement || 0).toLocaleString();
+
+      let badge = 'Live';
+      if (vehicle.isFeatured) badge = 'Featured';
+      if (isEndingSoon(vehicle)) badge = 'Ending Soon';
 
       return `
-        <article class="vehicle-card">
+        <article class="vehicle-card premium-card">
           <a class="vehicle-card-link" href="./vehicle.html?id=${encodeURIComponent(vehicle.id)}">
-            <div class="vehicle-image-wrap">
+            <div class="vehicle-image-wrap premium-image-wrap">
               ${
                 image
                   ? `<img class="vehicle-image" src="${image}" alt="${vehicle.title}" />`
-                  : `<div class="vehicle-image placeholder">No Image</div>`
+                  : `<div class="vehicle-image placeholder"><div class="car-illustration"></div></div>`
               }
-              <span class="status-badge status-${status}">${status}</span>
+              <span class="top-tag">${badge}</span>
             </div>
 
             <div class="vehicle-card-body">
               <h3>${vehicle.title}</h3>
-              <p class="vehicle-meta">${vehicle.year} • ${vehicle.make} • ${vehicle.model}</p>
-              <p class="vehicle-meta">${vehicle.mileage || ''} km • ${vehicle.transmission || ''} • ${vehicle.fuelType || ''}</p>
+              <p class="vehicle-meta">${Number(vehicle.mileage || 0).toLocaleString()} km &nbsp;&nbsp; ${vehicle.transmission || ''} &nbsp;&nbsp; ${vehicle.fuelType || ''}</p>
 
-              <div class="price-row">
-                <div>
+              <div class="price-panels">
+                <div class="mini-price-card">
                   <span class="label">Current Bid</span>
                   <strong>$${currentBid}</strong>
                 </div>
-                <div>
-                  <span class="label">Increment</span>
-                  <strong>$${Number(vehicle.minimumIncrement || 0).toLocaleString()}</strong>
+                <div class="mini-price-card">
+                  <span class="label">Min Increment</span>
+                  <strong>$${minIncrement}</strong>
                 </div>
+              </div>
+
+              <div class="progress-block">
+                <span class="progress-label">Auction progress</span>
+                <div class="progress-bar"><span></span></div>
+              </div>
+
+              <div class="card-actions">
+                <span class="btn btn-secondary fake-btn">View Details</span>
+                <span class="btn btn-primary fake-btn">Place Bid</span>
               </div>
             </div>
           </a>
@@ -115,19 +138,18 @@
       `;
     }
 
+    function applyFilter(vehicle) {
+      if (!vehicle.isVisible) return false;
+
+      if (currentFilter === 'all') return true;
+      if (currentFilter === 'ending-soon') return isEndingSoon(vehicle);
+
+      const category = getVehicleCategory(vehicle);
+      return category === currentFilter;
+    }
+
     function renderVehicles() {
-      const search = searchInput.value.trim().toLowerCase();
-      const filter = statusFilter.value;
-
-      const filtered = allVehicles.filter((vehicle) => {
-        const haystack = `${vehicle.title} ${vehicle.make} ${vehicle.model} ${vehicle.year}`.toLowerCase();
-        const status = getAuctionStatus(vehicle);
-
-        const matchesSearch = !search || haystack.includes(search);
-        const matchesStatus = filter === 'all' ? true : status === filter;
-
-        return vehicle.isVisible && matchesSearch && matchesStatus;
-      });
+      const filtered = allVehicles.filter(applyFilter);
 
       if (!filtered.length) {
         auctionGrid.innerHTML = `<div class="empty-state">No vehicles found.</div>`;
@@ -148,8 +170,14 @@
       }
     }
 
-    searchInput.addEventListener('input', renderVehicles);
-    statusFilter.addEventListener('change', renderVehicles);
+    pillButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        pillButtons.forEach((item) => item.classList.remove('active'));
+        button.classList.add('active');
+        currentFilter = button.dataset.filter;
+        renderVehicles();
+      });
+    });
 
     loadAuctions();
   </script>
